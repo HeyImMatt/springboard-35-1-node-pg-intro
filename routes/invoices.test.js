@@ -83,23 +83,22 @@ describe("GET /invoices/:id", function() {
   });
 });
 
-// describe("PUT /invoices/:code", function() {
-//   test("Edits a company", async function() {
-//     const editedCompany = {
-//       code: 'testco',
-//       name: 'Edited Name',
-//       description: 'Edited Description'
-//     };
-//     const response = await request(app).put(`/invoices/${editedCompany.code}`).send(editedCompany);
-//     expect(response.statusCode).toEqual(200);
-//     expect(response.body).toEqual({ company: editedCompany });
-//   });
+describe("PUT /invoices/:id", function() {
+  test("Edits a company", async function() {
+    const editedInvoice = {
+      id: testInvoice.id,
+      amt: 5,
+      paid: true,
+    };
+    const response = await request(app).put(`/invoices/${testInvoice.id}`).send(editedInvoice);
+    expect(response.statusCode).toEqual(200);
+  });
 
-//   test("Responds with 404 if can't find company", async function() {
-//     const response = await request(app).put(`/invoices/0`);
-//     expect(response.statusCode).toEqual(404);
-//   });
-// });
+  test("Responds with 404 if can't find company", async function() {
+    const response = await request(app).put(`/invoices/0`);
+    expect(response.statusCode).toEqual(404);
+  });
+});
 
 describe("DELETE /invoices/:id", function() {
   test("Deletes an invoice", async function() {
