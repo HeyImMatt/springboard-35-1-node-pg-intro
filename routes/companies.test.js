@@ -38,3 +38,23 @@ describe("GET /companies", function() {
     });
   });
 });
+
+describe("GET /companies/:code", function() {
+  test("Gets a single company", async function() {
+    const response = await request(app).get(`/companies/${testCompany.code}`);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({
+      company: {
+        code: testCompany.code,
+        name: testCompany.name,
+        description: testCompany.description,
+      }
+    });
+  });
+
+  test("Responds with 404 if can't find company", async function() {
+    const response = await request(app).get(`/companies/0`);
+    expect(response.statusCode).toEqual(404);
+  });
+
+});
