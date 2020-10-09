@@ -42,7 +42,7 @@ describe("GET /companies", function() {
 describe("POST /companies", function() {
   test("Adds a new company", async function() {
     const newCompany = {
-      code: 'newco',
+      code: 'new-company',
       name: 'New Company',
       description: 'New Description'
     };
