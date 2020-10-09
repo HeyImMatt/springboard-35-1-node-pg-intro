@@ -12,6 +12,19 @@ router.get("/", async (req, res, next) => {
   }
 })
 
+router.post("/", async (req, res, next) => {
+  try {
+    const data = req.body;
+    const newCompany = await db.query(`INSERT INTO companies (code, name, description)
+                                      VALUES ($1, $2, $3)
+                                      RETURNING code, name, description`, 
+                                      [data.code, data.name, data.description]);
+    return res.status(201).json({ company: newCompany.rows[0]});
+  } catch(e) {
+    return next(e);
+  }
+})
+
 router.get("/:code", async (req, res, next) => {
   try {
     const companyQuery = await db.query(`SELECT code, description, name FROM companies WHERE code = $1`, [req.params.code]);

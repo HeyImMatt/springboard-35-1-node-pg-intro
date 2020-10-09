@@ -39,6 +39,19 @@ describe("GET /companies", function() {
   });
 });
 
+describe("POST /companies", function() {
+  test("Adds a new company", async function() {
+    const newCompany = {
+      code: 'newco',
+      name: 'New Company',
+      description: 'New Description'
+    };
+    const response = await request(app).post("/companies").send(newCompany);
+    expect(response.statusCode).toEqual(201);
+    expect(response.body).toEqual({ company: newCompany });
+  });
+});
+
 describe("GET /companies/:code", function() {
   test("Gets a single company", async function() {
     const response = await request(app).get(`/companies/${testCompany.code}`);
