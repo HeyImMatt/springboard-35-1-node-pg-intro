@@ -30,12 +30,29 @@ router.get("/:code", async (req, res, next) => {
     const companyQuery = await db.query(`SELECT code, description, name FROM companies WHERE code = $1`, [req.params.code]);
 
     if(companyQuery.rows.length === 0) {
-      let notFoundError = new Error(`There is no company with code '${req.params.code}'`);
-      notFoundError.status = 404;
-      throw notFoundError;
+      throw new ExpressError(`There is no company with code '${req.params.code}'`, 404);
     }
     const { code, description, name } = companyQuery.rows[0];
     return res.json({ company: { code, description, name } });
+  } catch(e) {
+    return next(e);
+  }
+})
+
+router.put("/:code", async (req, res, next) => {
+  try {
+    const query = await db.query(`SELECT code, description, name FROM companies WHERE code = $1`, [req.params.code]);
+    if(query.rows.length === 0) {
+      throw new ExpressError(`There is no company with code '${req.params.code}'`, 404);
+    }
+    const result = await db.query(`UPDATE companies
+                                  SET description=$1, name=$2
+                                  WHERE code = $3
+                                  RETURNING code, name, description`, 
+                                  [req.body.description, req.body.name, req.params.code]);
+    const { code, description, name } = result.rows[0];
+    return res.json({ company: { code, description, name } });
+
   } catch(e) {
     return next(e);
   }

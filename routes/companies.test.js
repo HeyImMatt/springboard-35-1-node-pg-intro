@@ -69,5 +69,22 @@ describe("GET /companies/:code", function() {
     const response = await request(app).get(`/companies/0`);
     expect(response.statusCode).toEqual(404);
   });
+});
 
+describe("PUT /companies/:code", function() {
+  test("Edits a company", async function() {
+    const editedCompany = {
+      code: 'testco',
+      name: 'Edited Name',
+      description: 'Edited Description'
+    };
+    const response = await request(app).put(`/companies/${editedCompany.code}`).send(editedCompany);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({ company: editedCompany });
+  });
+
+  test("Responds with 404 if can't find company", async function() {
+    const response = await request(app).put(`/companies/0`);
+    expect(response.statusCode).toEqual(404);
+  });
 });
