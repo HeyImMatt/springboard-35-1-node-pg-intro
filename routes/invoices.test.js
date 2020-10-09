@@ -46,18 +46,16 @@ describe("GET /invoices", function() {
   });
 });
 
-// describe("POST /invoices", function() {
-//   test("Adds a new company", async function() {
-//     const newCompany = {
-//       code: 'new-company',
-//       name: 'New Company',
-//       description: 'New Description'
-//     };
-//     const response = await request(app).post("/invoices").send(newCompany);
-//     expect(response.statusCode).toEqual(201);
-//     expect(response.body).toEqual({ company: newCompany });
-//   });
-// });
+describe("POST /invoices", function() {
+  test("Adds a new invoice", async function() {
+    const newInvoice = {
+      comp_code: testCompany.code,
+      amt: 10,
+    };
+    const response = await request(app).post("/invoices").send(newInvoice);
+    expect(response.statusCode).toEqual(201);
+  });
+});
 
 describe("GET /invoices/:id", function() {
   test("Gets a single invoice", async function() {
