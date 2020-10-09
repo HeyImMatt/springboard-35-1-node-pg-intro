@@ -58,4 +58,19 @@ router.put("/:code", async (req, res, next) => {
   }
 })
 
+router.delete("/:code", async function(req, res, next) {
+  try {
+    const result = await db.query(
+      "DELETE FROM companies WHERE code = $1 RETURNING code", [req.params.code]);
+
+    if (result.rows.length === 0) {
+      throw new ExpressError(`There is no company with code of '${req.params.code}`, 404);
+    }
+    return res.json({ status: "deleted" });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
 module.exports = router;

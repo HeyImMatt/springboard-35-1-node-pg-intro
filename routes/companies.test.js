@@ -88,3 +88,16 @@ describe("PUT /companies/:code", function() {
     expect(response.statusCode).toEqual(404);
   });
 });
+
+describe("DELETE /companies/:code", function() {
+  test("Deletes a company", async function() {
+    const response = await request(app).delete(`/companies/${testCompany.code}`);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({ status: "deleted" });
+  });
+
+  test("Responds with 404 if can't find company", async function() {
+    const response = await request(app).put(`/companies/0`);
+    expect(response.statusCode).toEqual(404);
+  });
+});
