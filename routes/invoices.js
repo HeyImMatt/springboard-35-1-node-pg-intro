@@ -54,7 +54,7 @@ router.get("/:id", async function (req, res, next) {
       },
       amt: data.amt,
       paid: data.paid,
-      add_date: data.add_date,
+      add_date: data.add_date.toString(),
       paid_date: data.paid_date,
     };
 

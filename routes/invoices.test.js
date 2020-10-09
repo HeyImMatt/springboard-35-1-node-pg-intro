@@ -59,24 +59,31 @@ describe("GET /invoices", function() {
 //   });
 // });
 
-// describe("GET /invoices/:code", function() {
-//   test("Gets a single company", async function() {
-//     const response = await request(app).get(`/invoices/${testCompany.code}`);
-//     expect(response.statusCode).toEqual(200);
-//     expect(response.body).toEqual({
-//       company: {
-//         code: testCompany.code,
-//         name: testCompany.name,
-//         description: testCompany.description,
-//       }
-//     });
-//   });
+describe("GET /invoices/:id", function() {
+  test("Gets a single invoice", async function() {
+    const response = await request(app).get(`/invoices/${testInvoice.id}`);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({
+      invoice: {
+        id: testInvoice.id,
+        company: {
+          code: testCompany.code,
+          name: testCompany.name,
+          description: testCompany.description,
+        },
+        amt: testInvoice.amt,
+        paid: testInvoice.paid,
+        add_date: testInvoice.add_date.toString(),
+        paid_date: testInvoice.paid_date,
+      }
+    });
+  });
 
-//   test("Responds with 404 if can't find company", async function() {
-//     const response = await request(app).get(`/invoices/0`);
-//     expect(response.statusCode).toEqual(404);
-//   });
-// });
+  test("Responds with 404 if can't find invoice", async function() {
+    const response = await request(app).get(`/invoices/0`);
+    expect(response.statusCode).toEqual(404);
+  });
+});
 
 // describe("PUT /invoices/:code", function() {
 //   test("Edits a company", async function() {
