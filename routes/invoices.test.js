@@ -1,0 +1,110 @@
+// connect to right DB --- set before loading db.js
+process.env.NODE_ENV = "test";
+
+// npm packages
+const request = require("supertest");
+
+// app imports
+const app = require("../app");
+const db = require("../db");
+
+let testInvoice;
+let testCompany;
+
+beforeEach(async function() {
+  let result = await db.query(`
+    INSERT INTO
+    companies (code, name, description) VALUES ('test-company', 'Test Company', 'Company made for testing things.')
+    RETURNING code, name, description`);
+  testCompany = result.rows[0]; 
+  let invResult = await db.query(`
+    INSERT INTO
+      invoices (comp_code, amt, paid, add_date) VALUES ('test-company', '5', 'false', '1/1/2020')
+      RETURNING comp_code, amt, paid, add_date, paid_date, id`);
+  testInvoice = invResult.rows[0];
+});
+
+afterEach(async function() {
+  await db.query("DELETE FROM companies");
+  await db.query("DELETE FROM invoices");
+});
+
+afterAll(async function() {
+  await db.end();
+});
+
+describe("GET /invoices", function() {
+  test("Gets invoices", async function() {
+    const response = await request(app).get(`/invoices`);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({
+      invoices: [{
+        comp_code: testInvoice.comp_code,
+        id: testInvoice.id
+      }]
+    });
+  });
+});
+
+// describe("POST /invoices", function() {
+//   test("Adds a new company", async function() {
+//     const newCompany = {
+//       code: 'new-company',
+//       name: 'New Company',
+//       description: 'New Description'
+//     };
+//     const response = await request(app).post("/invoices").send(newCompany);
+//     expect(response.statusCode).toEqual(201);
+//     expect(response.body).toEqual({ company: newCompany });
+//   });
+// });
+
+// describe("GET /invoices/:code", function() {
+//   test("Gets a single company", async function() {
+//     const response = await request(app).get(`/invoices/${testCompany.code}`);
+//     expect(response.statusCode).toEqual(200);
+//     expect(response.body).toEqual({
+//       company: {
+//         code: testCompany.code,
+//         name: testCompany.name,
+//         description: testCompany.description,
+//       }
+//     });
+//   });
+
+//   test("Responds with 404 if can't find company", async function() {
+//     const response = await request(app).get(`/invoices/0`);
+//     expect(response.statusCode).toEqual(404);
+//   });
+// });
+
+// describe("PUT /invoices/:code", function() {
+//   test("Edits a company", async function() {
+//     const editedCompany = {
+//       code: 'testco',
+//       name: 'Edited Name',
+//       description: 'Edited Description'
+//     };
+//     const response = await request(app).put(`/invoices/${editedCompany.code}`).send(editedCompany);
+//     expect(response.statusCode).toEqual(200);
+//     expect(response.body).toEqual({ company: editedCompany });
+//   });
+
+//   test("Responds with 404 if can't find company", async function() {
+//     const response = await request(app).put(`/invoices/0`);
+//     expect(response.statusCode).toEqual(404);
+//   });
+// });
+
+// describe("DELETE /invoices/:code", function() {
+//   test("Deletes a company", async function() {
+//     const response = await request(app).delete(`/invoices/${testCompany.code}`);
+//     expect(response.statusCode).toEqual(200);
+//     expect(response.body).toEqual({ status: "deleted" });
+//   });
+
+//   test("Responds with 404 if can't find company", async function() {
+//     const response = await request(app).put(`/invoices/0`);
+//     expect(response.statusCode).toEqual(404);
+//   });
+// });

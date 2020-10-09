@@ -13,7 +13,7 @@ let testCompany;
 beforeEach(async function() {
   let result = await db.query(`
     INSERT INTO
-      companies (code, name, description) VALUES ('testco', 'Test Company', 'Company made for testing things.')
+      companies (code, name, description) VALUES ('test-company', 'Test Company', 'Company made for testing things.')
       RETURNING code, name, description`);
   testCompany = result.rows[0];
 });
